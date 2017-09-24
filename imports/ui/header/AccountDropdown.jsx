@@ -1,19 +1,27 @@
 import React, { Component } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 
-import SignInModal from './SignInModal.jsx'
-import RegisterModal from './RegisterModal.jsx'
+import SignInModal from '../accounts/SignInModal.jsx'
+import RegisterModal from '../accounts/RegisterModal.jsx'
 
 export default class AccountDropdown extends Component {
+    constructor(props){
+        super(props);
+
+        this.renderSignInModal = this.renderSignInModal.bind(this);
+        this.renderRegisterModal = this.renderRegisterModal.bind(this);
+        this.unmountModal = this.unmountModal.bind(this);
+    }
+
     renderSignInModal() {
-        render(<SignInModal onModalClose={this.closeModal} />, document.getElementById('modal'));   
+        render(<SignInModal onModalClose={this.unmountModal} />, document.getElementById('modal'));   
     }
 
     renderRegisterModal() {
-        render(<RegisterModal onModalClose={this.closeModal} />, document.getElementById('modal'));   
+        render(<RegisterModal onModalClose={this.unmountModal} />, document.getElementById('modal'));   
     }
 
-    closeModal() {
+    unmountModal() {
         unmountComponentAtNode(document.getElementById('modal'));
     }
 
@@ -24,8 +32,8 @@ export default class AccountDropdown extends Component {
                     Account
                 </button>
                 <div className="dropdown-menu dropdown-menu-right" aria-labelledby="accountMenu">
-                    <button className="dropdown-item" type="button" onClick={this.renderSignInModal.bind(this)}>Sign in</button>
-                    <button className="dropdown-item" type="button" onClick={this.renderRegisterModal.bind(this)}>Register</button>
+                    <button className="dropdown-item" type="button" onClick={this.renderSignInModal}>Sign in</button>
+                    <button className="dropdown-item" type="button" onClick={this.renderRegisterModal}>Register</button>
                 </div>
             </div>
         )
