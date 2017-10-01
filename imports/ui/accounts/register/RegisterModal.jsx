@@ -16,6 +16,7 @@ export default class RegisterModal extends Component {
       verifyPasswordError: ''
     };
 
+    this.unmountModal = this.unmountModal.bind(this);
     this.onRegisterInputChange = this.onRegisterInputChange.bind(this);
     this.registerBtnClicked = this.registerBtnClicked.bind(this);
     this.resetValidations = this.resetValidations.bind(this);
@@ -27,7 +28,12 @@ export default class RegisterModal extends Component {
   }
 
   componentDidMount() {
-    $('#registerModal').modal({backdrop: 'static'})
+    $('#registerModal').on('hidden.bs.modal', this.unmountModal);
+    $('#registerModal').modal();
+  }
+
+  unmountModal() {
+    this.props.onModalClose();
   }
 
   onRegisterInputChange(target) {
@@ -98,9 +104,9 @@ export default class RegisterModal extends Component {
 
   registerCallback(error) {
     if (error) {
-      // Show reason to user
+      console.log(error.reason)
     } else {
-      this.props.onModalClose()
+      $('#registerModal').modal('hide')
     }
   }
 
@@ -123,7 +129,7 @@ export default class RegisterModal extends Component {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">Register</h5>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.props.onModalClose}>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -131,7 +137,7 @@ export default class RegisterModal extends Component {
               <RegisterForm onInputChange={this.onRegisterInputChange} userInfo={registerData} errors={errors}/>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.props.onModalClose}>Cancel</button>
+              <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
               <button type="button" className="btn btn-primary" onClick={this.registerBtnClicked}>Register</button>
             </div>
           </div>
