@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import {Meteor} from 'meteor/meteor'
+import {Meteor} from 'meteor/meteor';
+import {withTracker} from 'meteor/react-meteor-data';
 
 import NoAccountDropdown from './NoAccountDropdown.jsx';
 import AccountDropdown from './AccountDropdown.jsx';
 
-export default class NavBar extends Component {
+class NavBar extends Component {
   render() {
     const dropdown = Meteor.userId()
       ? <AccountDropdown/>
@@ -34,3 +35,11 @@ export default class NavBar extends Component {
     )
   }
 }
+
+export default NavBarContainer = withTracker(() => {
+  const currentUser = Meteor.user()
+
+  return {
+    currentUser
+  };
+})(NavBar);
