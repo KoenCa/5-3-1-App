@@ -1,6 +1,8 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import { render } from 'react-dom';
+import 'noty/lib/noty.css'; //work around because of Meteor bug
+
 
 import App from '../imports/ui/App.jsx';
 
