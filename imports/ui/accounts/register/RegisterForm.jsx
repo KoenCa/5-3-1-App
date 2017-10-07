@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 export default class RegisterForm extends Component {
   constructor(props) {
@@ -55,4 +56,18 @@ export default class RegisterForm extends Component {
       </form>
     )
   }
+}
+
+RegisterForm.propTypes = {
+  onInputChange: PropTypes.func.isRequired,
+  userInfo: PropTypes.shape({
+    email: PropTypes.string.isRequired,
+    password: PropTypes.string.isRequired,
+    verifyPassword: PropTypes.string.isRequired,
+  }),
+  errors: PropTypes.shape({
+    emailError: PropTypes.string.isRequired,
+    passwordError: PropTypes.string.isRequired,
+    verifyPasswordError: PropTypes.string.isRequired,
+  }),
 }

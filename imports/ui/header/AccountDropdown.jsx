@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
 import {Meteor} from 'meteor/meteor';
+import PropTypes from 'prop-types';
 
 import ChangeEmailModal from '../accounts/change-email/ChangeEmailModal.jsx'
 import ChangePasswordModal from '../accounts/change-password/ChangePasswordModal.jsx'
@@ -47,4 +48,8 @@ export default class AccountDropdown extends Component {
       </div>
     )
   }
+}
+
+AccountDropdown.propTypes = {
+  currentUser: PropTypes.object,
 }

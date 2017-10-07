@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import { Accounts } from 'meteor/accounts-base'
+import { Accounts } from 'meteor/accounts-base';
+import PropTypes from 'prop-types';
 
-import RegisterForm from './RegisterForm.jsx'
+import { successNoty } from '../../../util/noty/noty-defaults.js';
+import RegisterForm from './RegisterForm.jsx';
 
 export default class RegisterModal extends Component {
   constructor(props) {
@@ -107,6 +109,7 @@ export default class RegisterModal extends Component {
       console.log(error.reason)
     } else {
       $('#registerModal').modal('hide')
+      successNoty('Successfuly registered and logged in!');
     }
   }
 
@@ -145,4 +148,8 @@ export default class RegisterModal extends Component {
       </div>
     )
   }
+}
+
+RegisterModal.propTypes = {
+  onModalClose: PropTypes.func.isRequired,
 }

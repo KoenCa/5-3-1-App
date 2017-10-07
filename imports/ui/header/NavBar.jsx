@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Meteor} from 'meteor/meteor';
 import {withTracker} from 'meteor/react-meteor-data';
+import PropTypes from 'prop-types';
 
 import NoAccountDropdown from './NoAccountDropdown.jsx';
 import AccountDropdown from './AccountDropdown.jsx';
@@ -8,7 +9,7 @@ import AccountDropdown from './AccountDropdown.jsx';
 class NavBar extends Component {
   render() {
     const dropdown = Meteor.userId()
-      ? <AccountDropdown/>
+      ? <AccountDropdown currentUser={this.props.currentUser} />
       : <NoAccountDropdown/>
 
     return (
@@ -34,6 +35,11 @@ class NavBar extends Component {
       </nav>
     )
   }
+}
+
+
+NavBar.propTypes = {
+  currentUser: PropTypes.object,
 }
 
 export default NavBarContainer = withTracker(() => {
