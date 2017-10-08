@@ -13,6 +13,13 @@ Meteor.methods({
         }
 
         Accounts.removeEmail(user._id, oldEmail);
-        Accounts.addEmail(user._id, email);
+
+        try {
+            Accounts.addEmail(user._id, email);
+        } catch (e) {
+            throw e;
+        } finally {
+            Accounts.addEmail(user._id, oldEmail);
+        }
     },
 })
