@@ -18,7 +18,6 @@ export default class RegisterModal extends Component {
       verifyPasswordError: ''
     };
 
-    this.unmountModal = this.unmountModal.bind(this);
     this.onRegisterInputChange = this.onRegisterInputChange.bind(this);
     this.registerBtnClicked = this.registerBtnClicked.bind(this);
     this.resetValidations = this.resetValidations.bind(this);
@@ -30,12 +29,8 @@ export default class RegisterModal extends Component {
   }
 
   componentDidMount() {
-    $('#registerModal').on('hidden.bs.modal', this.unmountModal);
+    $('#registerModal').on('hidden.bs.modal', this.props.onModalClose);
     $('#registerModal').modal();
-  }
-
-  unmountModal() {
-    this.props.onModalClose();
   }
 
   onRegisterInputChange(target) {
@@ -87,8 +82,7 @@ export default class RegisterModal extends Component {
   }
 
   passwordsAreEqual() {
-    const password = this.state.password;
-    const verifyPassword = this.state.verifyPassword;
+    const { password, verifyPassword } = this.state;
 
     return password === verifyPassword
       ? true
@@ -106,7 +100,7 @@ export default class RegisterModal extends Component {
 
   registerCallback(error) {
     if (error) {
-      console.log(error.reason)
+      this.setState({meteorError: error.reason})
     } else {
       $('#registerModal').modal('hide')
       successNoty('Successfuly registered and logged in!');
@@ -138,6 +132,13 @@ export default class RegisterModal extends Component {
             </div>
             <div className="modal-body">
               <RegisterForm onInputChange={this.onRegisterInputChange} userInfo={registerData} errors={errors}/>
+              {this.state.meteorError && <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                {this.state.meteorError}
+              </div>
+              }
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
