@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import {Meteor} from 'meteor/meteor';
 
 import {successNoty} from '../../../util/noty/noty-defaults';
+import Modal from '../../components/modal/Modal';
+import ModalHeader from '../../components/modal/ModalHeader';
+import ModalBody from '../../components/modal/ModalBody';
+import ModalFooter from '../../components/modal/ModalFooter';
 import ChangeEmailForm from './ChangeEmailForm';
 
 export default class ChangeEmailModal extends Component {
@@ -26,11 +30,6 @@ export default class ChangeEmailModal extends Component {
     this.setErrorsForNonIdenticalEmails = this.setErrorsForNonIdenticalEmails.bind(this);
     this.changeEmail = this.changeEmail.bind(this);
     this.changeEmailCallback = this.changeEmailCallback.bind(this);
-  }
-
-  componentDidMount() {
-    $('#changeEmailModal').on('hidden.bs.modal', this.props.onModalClose);
-    $('#changeEmailModal').modal()
   }
 
   onChangeEmailInputChange(target) {
@@ -77,7 +76,7 @@ export default class ChangeEmailModal extends Component {
   }
 
   setErrorsForEmptyInputFields() {
-    const { emailEmpty, verifyEmailEmpty } = this.emptyInputFields();
+    const {emailEmpty, verifyEmailEmpty} = this.emptyInputFields();
 
     this.setState({
       emailError: emailEmpty
@@ -90,7 +89,7 @@ export default class ChangeEmailModal extends Component {
   }
 
   emailsAreEqual() {
-    const { email, verifyEmail } = this.state;
+    const {email, verifyEmail} = this.state;
 
     return email === verifyEmail
       ? true
@@ -98,10 +97,7 @@ export default class ChangeEmailModal extends Component {
   }
 
   setErrorsForNonIdenticalEmails() {
-    this.setState({
-      emailError: 'Emails are not identical.',
-      verifyEmailError: 'Emails are not identical.',
-    });
+    this.setState({emailError: 'Emails are not identical.', verifyEmailError: 'Emails are not identical.'});
   }
 
   changeEmail() {
@@ -131,34 +127,16 @@ export default class ChangeEmailModal extends Component {
     };
 
     return (
-      <div className="modal fade" id="changeEmailModal" tabIndex="-1" role="dialog">
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Change email</h5>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <ChangeEmailForm onInputChange={this.onChangeEmailInputChange} userInfo={changeEmailData} errors={errors}/>
-
-              {this.state.meteorError &&
-                <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                  <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                  {this.state.meteorError}
-                </div>
-              }
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-              <button type="button" className="btn btn-primary" onClick={this.confirmBtnClicked}>Confirm</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Modal modalName="changeEmailModal" onModalClose={this.props.onModalClose}>
+        <ModalHeader modalTitle="Change email"/>
+        <ModalBody meteorError={this.state.meteorError}>
+          <ChangeEmailForm onInputChange={this.onChangeEmailInputChange} userInfo={changeEmailData} errors={errors}/>
+        </ModalBody>
+        <ModalFooter>
+          <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" className="btn btn-primary" onClick={this.confirmBtnClicked}>Confirm</button>
+        </ModalFooter>
+      </Modal>
     )
   }
 }
