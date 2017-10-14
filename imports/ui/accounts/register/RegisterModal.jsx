@@ -3,10 +3,7 @@ import {Accounts} from 'meteor/accounts-base';
 import PropTypes from 'prop-types';
 
 import {successNoty} from '../../../util/noty/noty-defaults.js';
-import Modal from '../../components/modal/Modal';
-import ModalHeader from '../../components/modal/ModalHeader';
-import ModalBody from '../../components/modal/ModalBody';
-import ModalFooter from '../../components/modal/ModalFooter';
+import {Modal, ModalHeader, ModalBody, ModalFooter} from '../../components/modal/Modal';
 import RegisterForm from './RegisterForm.jsx';
 
 export default class RegisterModal extends Component {
