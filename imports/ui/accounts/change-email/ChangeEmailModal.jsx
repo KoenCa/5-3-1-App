@@ -78,10 +78,7 @@ export default class ChangeEmailModal extends Component {
 
   emailsAreEqual = () => {
     const {email, verifyEmail} = this.state;
-
     return email === verifyEmail
-      ? true
-      : false
   }
 
   setErrorsForNonIdenticalEmails = () => {
