@@ -1,8 +1,12 @@
 import React, {Component} from 'react';
-import { Accounts } from 'meteor/accounts-base';
+import {Accounts} from 'meteor/accounts-base';
 import PropTypes from 'prop-types';
 
-import { successNoty } from '../../../util/noty/noty-defaults.js';
+import {successNoty} from '../../../util/noty/noty-defaults.js';
+import Modal from '../../components/modal/Modal';
+import ModalHeader from '../../components/modal/ModalHeader';
+import ModalBody from '../../components/modal/ModalBody';
+import ModalFooter from '../../components/modal/ModalFooter';
 import RegisterForm from './RegisterForm.jsx';
 
 export default class RegisterModal extends Component {
@@ -17,34 +21,18 @@ export default class RegisterModal extends Component {
       passwordError: '',
       verifyPasswordError: ''
     };
-
-    this.onRegisterInputChange = this.onRegisterInputChange.bind(this);
-    this.registerBtnClicked = this.registerBtnClicked.bind(this);
-    this.resetValidations = this.resetValidations.bind(this);
-    this.runValidations = this.runValidations.bind(this);
-    this.register = this.register.bind(this);
-    this.emptyInputFields = this.emptyInputFields.bind(this);
-    this.passwordsAreEqual = this.passwordsAreEqual.bind(this);
-    this.registerCallback = this.registerCallback.bind(this);
   }
 
-  componentDidMount() {
-    $('#registerModal').on('hidden.bs.modal', this.props.onModalClose);
-    $('#registerModal').modal();
-  }
-
-  onRegisterInputChange(target) {
-    const id = target.id;
-    const value = target.value;
-
+  onRegisterInputChange = (target) => {
+    const {id, value} = target;
     this.setState({[id]: value});
   }
 
-  registerBtnClicked() {
+  registerBtnClicked = () => {
     this.resetValidations(this.runValidations)
   }
 
-  resetValidations(callback) {
+  resetValidations = (callback) => {
     this.setState({
       emailError: '',
       passwordError: '',
@@ -52,44 +40,53 @@ export default class RegisterModal extends Component {
     }, callback);
   }
 
-  runValidations() {
-    const { emailEmpty, passwordEmpty, verifyPasswordEmpty } = this.emptyInputFields();
+  runValidations = () => {
+    const {emailEmpty, passwordEmpty, verifyPasswordEmpty} = this.emptyInputFields();
     if (emailEmpty || passwordEmpty || verifyPasswordEmpty) {
       return this.setState({
-        emailError: emailEmpty ? 'Field is required.' : '',
-        passwordError: passwordEmpty ? 'Field is required.' : '',
-        verifyPasswordError: verifyPasswordEmpty ? 'Field is required.' : ''
+        emailError: emailEmpty
+          ? 'Field is required.'
+          : '',
+        passwordError: passwordEmpty
+          ? 'Field is required.'
+          : '',
+        verifyPasswordError: verifyPasswordEmpty
+          ? 'Field is required.'
+          : ''
       });
     } else if (!this.passwordsAreEqual()) {
       return this.setState({
         passwordError: 'Passwords are not identical.',
-        verifyPasswordError: 'Passwords are not identical.',
+        verifyPasswordError: 'Passwords are not identical.'
       });
     } else {
       this.register()
     }
   }
 
-  emptyInputFields() {
-    const { email, password, verifyPassword } = this.state;
+  emptyInputFields = () => {
+    const {email, password, verifyPassword} = this.state;
     let errorState = {};
 
-    errorState.emailEmpty = email ? false : true;
-    errorState.passwordEmpty = password ? false : true;
-    errorState.verifyPasswordEmpty = verifyPassword ? false : true;
+    errorState.emailEmpty = email
+      ? false
+      : true;
+    errorState.passwordEmpty = password
+      ? false
+      : true;
+    errorState.verifyPasswordEmpty = verifyPassword
+      ? false
+      : true;
 
     return errorState;
   }
 
-  passwordsAreEqual() {
-    const { password, verifyPassword } = this.state;
-
+  passwordsAreEqual = () => {
+    const {password, verifyPassword} = this.state;
     return password === verifyPassword
-      ? true
-      : false
   }
 
-  register() {
+  register = () => {
     const {email, password} = this.state;
 
     Accounts.createUser({
@@ -98,7 +95,7 @@ export default class RegisterModal extends Component {
     }, this.registerCallback);
   }
 
-  registerCallback(error) {
+  registerCallback = (error) => {
     if (error) {
       this.setState({meteorError: error.reason})
     } else {
@@ -121,36 +118,20 @@ export default class RegisterModal extends Component {
     }
 
     return (
-      <div className="modal fade" id="registerModal" tabIndex="-1" role="dialog">
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Register</h5>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <RegisterForm onInputChange={this.onRegisterInputChange} userInfo={registerData} errors={errors}/>
-              {this.state.meteorError && <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-                {this.state.meteorError}
-              </div>
-              }
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-              <button type="button" className="btn btn-primary" onClick={this.registerBtnClicked}>Register</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Modal modalName="registerModal" onModalClose={this.props.onModalClose}>
+        <ModalHeader modalTitle="Register"/>
+        <ModalBody meteorError={this.state.meteorError}>
+          <RegisterForm onInputChange={this.onRegisterInputChange} userInfo={registerData} errors={errors}/>
+        </ModalBody>
+        <ModalFooter>
+          <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" className="btn btn-primary" onClick={this.registerBtnClicked}>Register</button>
+        </ModalFooter>
+      </Modal>
     )
   }
 }
 
 RegisterModal.propTypes = {
-  onModalClose: PropTypes.func.isRequired,
+  onModalClose: PropTypes.func.isRequired
 }
