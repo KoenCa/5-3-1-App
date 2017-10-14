@@ -3,10 +3,7 @@ import PropTypes from 'prop-types';
 import {Meteor} from 'meteor/meteor';
 
 import {successNoty} from '../../../util/noty/noty-defaults';
-import Modal from '../../components/modal/Modal';
-import ModalHeader from '../../components/modal/ModalHeader';
-import ModalBody from '../../components/modal/ModalBody';
-import ModalFooter from '../../components/modal/ModalFooter';
+import {Modal, ModalHeader, ModalBody, ModalFooter} from '../../components/modal/Modal';
 import ChangeEmailForm from './ChangeEmailForm';
 
 export default class ChangeEmailModal extends Component {
