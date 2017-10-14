@@ -19,37 +19,25 @@ export default class ChangeEmailModal extends Component {
       emailError: '',
       verifyEmailError: ''
     };
-
-    this.onChangeEmailInputChange = this.onChangeEmailInputChange.bind(this);
-    this.confirmBtnClicked = this.confirmBtnClicked.bind(this);
-    this.resetValidations = this.resetValidations.bind(this);
-    this.runValidations = this.runValidations.bind(this);
-    this.emptyInputFields = this.emptyInputFields.bind(this);
-    this.setErrorsForEmptyInputFields = this.setErrorsForEmptyInputFields.bind(this);
-    this.emailsAreEqual = this.emailsAreEqual.bind(this);
-    this.setErrorsForNonIdenticalEmails = this.setErrorsForNonIdenticalEmails.bind(this);
-    this.changeEmail = this.changeEmail.bind(this);
-    this.changeEmailCallback = this.changeEmailCallback.bind(this);
   }
 
-  onChangeEmailInputChange(target) {
+  onChangeEmailInputChange = (target) => {
     const {id, value} = target;
-
     this.setState({[id]: value});
   }
 
-  confirmBtnClicked() {
+  confirmBtnClicked = () => {
     this.resetValidations(this.runValidations)
   }
 
-  resetValidations(callback) {
+  resetValidations = (callback) => {
     this.setState({
       emailError: '',
       verifyEmailError: ''
     }, callback);
   }
 
-  runValidations() {
+  runValidations = () => {
     const {emailEmpty, verifyEmailEmpty} = this.emptyInputFields();
 
     if (emailEmpty || verifyEmailEmpty) {
@@ -61,7 +49,7 @@ export default class ChangeEmailModal extends Component {
     }
   }
 
-  emptyInputFields() {
+  emptyInputFields = () => {
     const {email, verifyEmail} = this.state;
     let errorState = {};
 
@@ -75,7 +63,7 @@ export default class ChangeEmailModal extends Component {
     return errorState;
   }
 
-  setErrorsForEmptyInputFields() {
+  setErrorsForEmptyInputFields = () => {
     const {emailEmpty, verifyEmailEmpty} = this.emptyInputFields();
 
     this.setState({
@@ -88,7 +76,7 @@ export default class ChangeEmailModal extends Component {
     });
   }
 
-  emailsAreEqual() {
+  emailsAreEqual = () => {
     const {email, verifyEmail} = this.state;
 
     return email === verifyEmail
@@ -96,17 +84,17 @@ export default class ChangeEmailModal extends Component {
       : false
   }
 
-  setErrorsForNonIdenticalEmails() {
+  setErrorsForNonIdenticalEmails = () => {
     this.setState({emailError: 'Emails are not identical.', verifyEmailError: 'Emails are not identical.'});
   }
 
-  changeEmail() {
+  changeEmail = () => {
     const {email} = this.state;
 
     Meteor.call('accounts.changeEmail', email, this.changeEmailCallback);
   }
 
-  changeEmailCallback(error, result) {
+  changeEmailCallback = (error, result) => {
     if (error) {
       this.setState({meteorError: error.reason})
     } else {
