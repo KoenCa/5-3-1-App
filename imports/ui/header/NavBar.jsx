@@ -37,7 +37,6 @@ class NavBar extends Component {
   }
 }
 
-
 NavBar.propTypes = {
   currentUser: PropTypes.object,
 }
