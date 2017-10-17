@@ -94,7 +94,6 @@ export default class ChangePasswordModal extends Component {
   }
 
   changePasswordCallback = (error) => {
-    console.log('test');
     if (error) {
       this.setState({meteorError: error.reason})
     } else {
