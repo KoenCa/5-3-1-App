@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Meteor} from 'meteor/meteor';
+import {Accounts} from 'meteor/accounts-base';
 
 import {successNoty} from '../../../util/noty/noty-defaults';
 import {Modal, ModalHeader, ModalBody, ModalFooter} from '../../components/modal/Modal';
@@ -11,9 +11,11 @@ export default class ChangePasswordModal extends Component {
     super(props);
 
     this.state = {
-      password: '',
+      oldPassword: '',
+      newPassword: '',
       verifyPassword: '',
-      passwordError: '',
+      oldPasswordError: '',
+      newPasswordError: '',
       verifyPasswordError: ''
     };
   }
@@ -29,15 +31,16 @@ export default class ChangePasswordModal extends Component {
 
   resetValidations = (callback) => {
     this.setState({
-      passwordError: '',
+      oldPasswordError: '',
+      newPasswordError: '',
       verifyPasswordError: ''
     }, callback);
   }
 
   runValidations = () => {
-    const {passwordEmpty, verifyPasswordEmpty} = this.emptyInputFields();
+    const {oldPasswordEmpty, newPasswordEmpty, verifyPasswordEmpty} = this.emptyInputFields();
 
-    if (passwordEmpty || verifyPasswordEmpty) {
+    if (oldPasswordEmpty, newPasswordEmpty || verifyPasswordEmpty) {
       return this.setErrorsForEmptyInputFields()
     } else if (!this.passwordsAreEqual()) {
       return this.setErrorsForNonIdenticalPasswords()
@@ -47,10 +50,13 @@ export default class ChangePasswordModal extends Component {
   }
 
   emptyInputFields = () => {
-    const {password, verifyPassword} = this.state;
+    const {oldPassword, newPassword, verifyPassword} = this.state;
     let errorState = {};
 
-    errorState.passwordEmpty = password
+    errorState.oldPasswordEmpty = oldPassword
+      ? false
+      : true;
+    errorState.newPasswordEmpty = newPassword
       ? false
       : true;
     errorState.verifyPasswordEmpty = verifyPassword
@@ -61,10 +67,13 @@ export default class ChangePasswordModal extends Component {
   }
 
   setErrorsForEmptyInputFields = () => {
-    const {passwordEmpty, verifyPasswordEmpty} = this.emptyInputFields();
+    const { oldPasswordEmpty, newPasswordEmpty, verifyPasswordEmpty} = this.emptyInputFields();
 
     this.setState({
-      passwordError: passwordEmpty
+      oldPasswordError: oldPasswordEmpty
+        ? 'Field is required.'
+        : '',
+      newPasswordError: newPasswordEmpty
         ? 'Field is required.'
         : '',
       verifyPasswordError: verifyPasswordEmpty
@@ -73,23 +82,19 @@ export default class ChangePasswordModal extends Component {
     });
   }
 
-  passwordsAreEqual = () => this.state.password === this.state.verifyPassword
+  passwordsAreEqual = () => this.state.newPassword === this.state.verifyPassword
 
   setErrorsForNonIdenticalPasswords = () => {
-    this.setState({
-      passwordError: 'Passwords are not identical.',
-      verifyPasswordError: 'Passwords are not identical.'
-    });
+    this.setState({newPasswordError: 'Passwords are not identical.', verifyPasswordError: 'Passwords are not identical.'});
   }
 
   changePassword = () => {
-    const {password} = this.state;
-
-    console.log('changePassword');
-    // Meteor.call('accounts.changePassword', password, this.changePasswordCallback);
+    const {oldPassword, newPassword} = this.state;
+    Accounts.changePassword(oldPassword, newPassword, this.changePasswordCallback);
   }
 
-  changePasswordCallback = (error, result) => {
+  changePasswordCallback = (error) => {
+    console.log('test');
     if (error) {
       this.setState({meteorError: error.reason})
     } else {
@@ -100,12 +105,14 @@ export default class ChangePasswordModal extends Component {
 
   render() {
     const changePasswordData = {
-      password: this.state.password,
+      oldPassword: this.state.oldPassword,
+      newPassword: this.state.newPassword,
       verifyPassword: this.state.verifyPassword
     };
 
     const errors = {
-      passwordError: this.state.passwordError,
+      oldPasswordError: this.state.oldPasswordError,
+      newPasswordError: this.state.newPasswordError,
       verifyPasswordError: this.state.verifyPasswordError
     };
 
@@ -113,11 +120,7 @@ export default class ChangePasswordModal extends Component {
       <Modal modalName="changePasswordModal" onModalClose={this.props.onModalClose}>
         <ModalHeader modalTitle="Change password"/>
         <ModalBody meteorError={this.state.meteorError}>
-          <ChangePasswordForm
-            onInputChange={this.onChangePasswordInputChange}
-            userInfo={changePasswordData}
-            errors={errors}
-          />
+          <ChangePasswordForm onInputChange={this.onChangePasswordInputChange} userInfo={changePasswordData} errors={errors}/>
         </ModalBody>
         <ModalFooter>
           <button type="button" className="btn btn-secondary" data-dismiss="modal">
