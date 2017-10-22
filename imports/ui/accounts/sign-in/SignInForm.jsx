@@ -1,61 +1,49 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import Form from '../../components/forms/Form';
+
 export default class SignInForm extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleInputChange = this.handleInputChange.bind(this);
-  }
-
-  handleInputChange(event) {
+  
+  handleInputChange = (event) => {
     const target = event.target;
     this.props.onInputChange(target);
   }
 
+  formIsValid = () => {
+    console.log('test');
+  }
+
   render() {
-    const correctClasses = 'form-control'
-    const incorrectClasses = 'form-control is-invalid'
-
-    const { email, password } = this.props.userInfo;
-    const { emailError, passwordError } = this.props.errors;
-
-    const emailClasses = emailError
-      ? incorrectClasses
-      : correctClasses;
-    const passwordClasses = passwordError
-      ? incorrectClasses
-      : correctClasses;
+    const {formId} = this.props;
+    const {email, password} = this.props.userInfo;
 
     return (
-      <form>
+      <Form formId={formId} onFormValid={this.formIsValid}>
         <div className="form-group">
           <label htmlFor="email" className="form-control-label">Email:</label>
-          <input value={email} type="email" className={emailClasses} id="email" onChange={this.handleInputChange} />
+          <input value={email} type="email" className="form-control" id="email" onChange={this.handleInputChange} required />
           <div className="invalid-feedback">
-            {emailError}
+            Please provide a valid email.
           </div>
         </div>
         <div className="form-group">
           <label htmlFor="password" className="form-control-label">Password:</label>
-          <input value={password} type="password" className={passwordClasses} id="password" onChange={this.handleInputChange} />
+          <input value={password} type="password" className="form-control" id="password" onChange={this.handleInputChange} required />
           <div className="invalid-feedback">
-            {passwordError}
+            Please provide a valid password
           </div>
         </div>
-      </form>
+      </Form>
     )
   }
 }
 
 SignInForm.propTypes = {
   onInputChange: PropTypes.func.isRequired,
+  formId: PropTypes.string.isRequired,
   userInfo: PropTypes.shape({
     email: PropTypes.string.isRequired,
     password: PropTypes.string.isRequired,
-  }),
-  errors: PropTypes.shape({
-    emailError: PropTypes.string.isRequired,
-    passwordError: PropTypes.string.isRequired,
   }),
 }

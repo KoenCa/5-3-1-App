@@ -12,56 +12,15 @@ export default class SignInModal extends Component {
 
     this.state = {
       email: '',
-      password: '',
-      emailError: '',
-      passwordError: ''
+      password: ''
     };
+
+    this.formId = 'signInForm';
   }
 
   onSignInInputChange = (target) => {
     const {id, value} = target;
     this.setState({[id]: value});
-  }
-
-  signInBtnClicked = () => {
-    this.resetValidations(this.runValidations)
-  }
-
-  resetValidations = (callback) => {
-    this.setState({
-      emailError: '',
-      passwordError: ''
-    }, callback);
-  }
-
-  runValidations = () => {
-    const {emailEmpty, passwordEmpty} = this.emptyInputFields();
-    if (emailEmpty || passwordEmpty) {
-      return this.setState({
-        emailError: emailEmpty
-          ? 'Field is required.'
-          : '',
-        passwordError: passwordEmpty
-          ? 'Field is required.'
-          : ''
-      });
-    } else {
-      this.signIn()
-    }
-  }
-
-  emptyInputFields = () => {
-    const {email, password} = this.state;
-    let errorState = {};
-
-    errorState.emailEmpty = email
-      ? false
-      : true;
-    errorState.passwordEmpty = password
-      ? false
-      : true;
-
-    return errorState;
   }
 
   signIn = () => {
@@ -87,21 +46,16 @@ export default class SignInModal extends Component {
       password: this.state.password
     };
 
-    const errors = {
-      emailError: this.state.emailError,
-      passwordError: this.state.passwordError
-    };
-
     return (
       <Modal modalName="signInModal" onModalClose={this.props.onModalClose}>
         <ModalHeader modalTitle="Sign in"/>
         <ModalBody meteorError={this.state.meteorError}>
-          <SignInForm onInputChange={this.onSignInInputChange} userInfo={signInData} errors={errors}/>
+          <SignInForm onInputChange={this.onSignInInputChange} formId={this.formId} userInfo={signInData} />
           <a href="javascript:void(0);">Forgot password?</a>
         </ModalBody>
         <ModalFooter>
           <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="button" className="btn btn-primary" onClick={this.signInBtnClicked}>Sign in</button>
+          <button type="submit" form={this.formId} className="btn btn-primary">Sign in</button>
         </ModalFooter>
       </Modal>
     )
