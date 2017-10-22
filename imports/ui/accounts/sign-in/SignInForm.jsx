@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 import Form from '../../components/forms/Form';
 
 export default class SignInForm extends Component {
-  
+
   handleInputChange = (event) => {
     const target = event.target;
     this.props.onInputChange(target);
   }
 
   formIsValid = () => {
-    console.log('test');
+    this.props.signIn()
   }
 
   render() {
@@ -41,6 +41,7 @@ export default class SignInForm extends Component {
 
 SignInForm.propTypes = {
   onInputChange: PropTypes.func.isRequired,
+  signIn: PropTypes.func.isRequired,
   formId: PropTypes.string.isRequired,
   userInfo: PropTypes.shape({
     email: PropTypes.string.isRequired,

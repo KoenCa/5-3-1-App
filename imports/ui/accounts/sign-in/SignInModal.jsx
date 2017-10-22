@@ -50,7 +50,7 @@ export default class SignInModal extends Component {
       <Modal modalName="signInModal" onModalClose={this.props.onModalClose}>
         <ModalHeader modalTitle="Sign in"/>
         <ModalBody meteorError={this.state.meteorError}>
-          <SignInForm onInputChange={this.onSignInInputChange} formId={this.formId} userInfo={signInData} />
+          <SignInForm onInputChange={this.onSignInInputChange} signIn={this.signIn} formId={this.formId} userInfo={signInData} />
           <a href="javascript:void(0);">Forgot password?</a>
         </ModalBody>
         <ModalFooter>
