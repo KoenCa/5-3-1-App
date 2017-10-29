@@ -22,17 +22,19 @@ export default class SignInForm extends Component {
       <Form formId={formId} onFormValid={this.formIsValid}>
         <div className="form-group">
           <label htmlFor="email" className="form-control-label">Email:</label>
-          <input value={email} type="email" className="form-control" id="email" onChange={this.handleInputChange} required />
-          <div className="invalid-feedback">
-            Please provide a valid email.
-          </div>
+          <input
+            value={email} type="email" className="form-control" id="email"
+            onChange={this.handleInputChange} required
+          />
+          <div className="invalid-feedback"> Please provide a valid email.</div>
         </div>
         <div className="form-group">
           <label htmlFor="password" className="form-control-label">Password:</label>
-          <input value={password} type="password" className="form-control" id="password" onChange={this.handleInputChange} required />
-          <div className="invalid-feedback">
-            Please provide a valid password
-          </div>
+          <input
+            value={password} type="password" className="form-control" id="password"
+            onChange={this.handleInputChange} required
+          />
+          <div className="invalid-feedback">Please provide a valid password.</div>
         </div>
       </Form>
     )
