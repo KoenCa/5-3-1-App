@@ -1,73 +1,93 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import Form from '../../components/forms/Form';
+
 export default class RegisterForm extends Component {
   constructor(props) {
     super(props);
-
-    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  handleInputChange(event) {
+  handleInputChange = (event) => {
     const target = event.target;
     this.props.onInputChange(target);
   }
 
+  checkEqualPasswordsOnBlur = () => {
+    this.passwordsAreEqual()
+      ? this.showPassworValidity()
+      : this.showPasswordError()
+  }
+
+  formIsValid = () => {
+    this.passwordsAreEqual()
+      ? this.props.register()
+      : this.showPasswordError();
+  }
+
+  passwordsAreEqual = () => {
+    const {password, verifyPassword} = this.props.userInfo;
+    return password === verifyPassword;
+  }
+
+  showPasswordError = () => {
+    this.verifyPasswordInput.setCustomValidity('Passwords must match.')
+  }
+
+  showPassworValidity = () => {
+    this.verifyPasswordInput.setCustomValidity('')
+  }
+
   render() {
-    const correctClasses = 'form-control'
-    const incorrectClasses = 'form-control is-invalid'
-
-    const { email, password, verifyPassword } = this.props.userInfo;
-    const { emailError, passwordError, verifyPasswordError } = this.props.errors;
-
-    const emailClasses = emailError
-      ? incorrectClasses
-      : correctClasses;
-    const passwordClasses = passwordError
-      ? incorrectClasses
-      : correctClasses;
-    const verifyPasswordClasses = verifyPasswordError
-      ? incorrectClasses
-      : correctClasses;
+    const {formId} = this.props;
+    const {email, password, verifyPassword} = this.props.userInfo;
 
     return (
-      <form>
+      <Form formId={formId} onFormValid={this.formIsValid}>
         <div className="form-group">
           <label htmlFor="email" className="form-control-label">Email:</label>
-          <input value={email} type="email" className={emailClasses} id="email" onChange={this.handleInputChange}/>
+          <input
+            value={email} type="email" className="form-control" id="email"
+            onChange={this.handleInputChange} required
+          />
           <div className="invalid-feedback">
-            {emailError}
+            Please provide a valid email.
           </div>
         </div>
         <div className="form-group">
           <label htmlFor="password" className="form-control-label">Password:</label>
-          <input value={password} type="password" className={passwordClasses} id="password" onChange={this.handleInputChange}/>
+          <input
+            value={password} type="password" className="form-control" id="password"
+            onChange={this.handleInputChange} ref={(input) => {this.passwordInput = input;}}
+            required
+          />
           <div className="invalid-feedback">
-            {passwordError}
+            Please provide a valid password.
           </div>
         </div>
         <div className="form-group">
           <label htmlFor="verifyPassword" className="form-control-label">Verify password:</label>
-          <input value={verifyPassword} type="password" className={verifyPasswordClasses} id="verifyPassword" onChange={this.handleInputChange}/>
+          <input
+            value={verifyPassword} type="password" className="form-control" id="verifyPassword"
+            onChange={this.handleInputChange} ref={(input) => {this.verifyPasswordInput = input;}}
+            onBlur={this.checkEqualPasswordsOnBlur} required
+          />
           <div className="invalid-feedback">
-            {verifyPasswordError}
+            Passwords must match.
           </div>
         </div>
-      </form>
+      </Form>
     )
   }
 }
 
 RegisterForm.propTypes = {
   onInputChange: PropTypes.func.isRequired,
+  register: PropTypes.func.isRequired,
+  formId: PropTypes.string.isRequired,
   userInfo: PropTypes.shape({
     email: PropTypes.string.isRequired,
     password: PropTypes.string.isRequired,
     verifyPassword: PropTypes.string.isRequired,
-  }),
-  errors: PropTypes.shape({
-    emailError: PropTypes.string.isRequired,
-    passwordError: PropTypes.string.isRequired,
-    verifyPasswordError: PropTypes.string.isRequired,
-  }),
+  })
 }
