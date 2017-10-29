@@ -17,6 +17,7 @@ export default class RegisterModal extends Component {
     };
 
     this.formId = 'registerForm';
+    this.modalName = 'registerModal';
   }
 
   onRegisterInputChange = (target) => {
@@ -37,23 +38,20 @@ export default class RegisterModal extends Component {
     if (error) {
       this.setState({meteorError: error.reason})
     } else {
-      $('#registerModal').modal('hide')
+      $(`#${this.modalName}`).modal('hide')
       successNoty('Successfuly registered and logged in!');
     }
   }
 
   render() {
-    const registerData = {
-      email: this.state.email,
-      password: this.state.password,
-      verifyPassword: this.state.verifyPassword
-    };
-
     return (
-      <Modal modalName="registerModal" onModalClose={this.props.onModalClose}>
+      <Modal modalName={this.modalName} onModalClose={this.props.onModalClose}>
         <ModalHeader modalTitle="Register"/>
         <ModalBody meteorError={this.state.meteorError}>
-          <RegisterForm onInputChange={this.onRegisterInputChange} register={this.register} formId={this.formId} userInfo={registerData} />
+          <RegisterForm
+            onInputChange={this.onRegisterInputChange} register={this.register}
+            formId={this.formId} userInfo={{...this.state}}
+          />
         </ModalBody>
         <ModalFooter>
           <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>

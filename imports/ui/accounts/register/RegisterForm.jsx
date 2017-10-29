@@ -4,9 +4,6 @@ import PropTypes from 'prop-types';
 import Form from '../../components/forms/Form';
 
 export default class RegisterForm extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   handleInputChange = (event) => {
     const target = event.target;
@@ -50,20 +47,15 @@ export default class RegisterForm extends Component {
             value={email} type="email" className="form-control" id="email"
             onChange={this.handleInputChange} required
           />
-          <div className="invalid-feedback">
-            Please provide a valid email.
-          </div>
+          <div className="invalid-feedback">Please provide a valid email.</div>
         </div>
         <div className="form-group">
           <label htmlFor="password" className="form-control-label">Password:</label>
           <input
             value={password} type="password" className="form-control" id="password"
-            onChange={this.handleInputChange} ref={(input) => {this.passwordInput = input;}}
-            required
+            onChange={this.handleInputChange} required
           />
-          <div className="invalid-feedback">
-            Please provide a valid password.
-          </div>
+          <div className="invalid-feedback">Please provide a valid password.</div>
         </div>
         <div className="form-group">
           <label htmlFor="verifyPassword" className="form-control-label">Verify password:</label>
@@ -72,9 +64,7 @@ export default class RegisterForm extends Component {
             onChange={this.handleInputChange} ref={(input) => {this.verifyPasswordInput = input;}}
             onBlur={this.checkEqualPasswordsOnBlur} required
           />
-          <div className="invalid-feedback">
-            Passwords must match.
-          </div>
+          <div className="invalid-feedback">Passwords must match.</div>
         </div>
       </Form>
     )
