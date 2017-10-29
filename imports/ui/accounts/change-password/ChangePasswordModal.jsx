@@ -14,78 +14,15 @@ export default class ChangePasswordModal extends Component {
       oldPassword: '',
       newPassword: '',
       verifyPassword: '',
-      oldPasswordError: '',
-      newPasswordError: '',
-      verifyPasswordError: ''
     };
+
+    this.formId = 'changePasswordForm';
+    this.modalName = 'changePasswordModal';
   }
 
   onChangePasswordInputChange = (target) => {
     const {id, value} = target;
     this.setState({[id]: value});
-  }
-
-  confirmBtnClicked = () => {
-    this.resetValidations(this.runValidations)
-  }
-
-  resetValidations = (callback) => {
-    this.setState({
-      oldPasswordError: '',
-      newPasswordError: '',
-      verifyPasswordError: ''
-    }, callback);
-  }
-
-  runValidations = () => {
-    const {oldPasswordEmpty, newPasswordEmpty, verifyPasswordEmpty} = this.emptyInputFields();
-
-    if (oldPasswordEmpty, newPasswordEmpty || verifyPasswordEmpty) {
-      return this.setErrorsForEmptyInputFields()
-    } else if (!this.passwordsAreEqual()) {
-      return this.setErrorsForNonIdenticalPasswords()
-    } else {
-      this.changePassword()
-    }
-  }
-
-  emptyInputFields = () => {
-    const {oldPassword, newPassword, verifyPassword} = this.state;
-    let errorState = {};
-
-    errorState.oldPasswordEmpty = oldPassword
-      ? false
-      : true;
-    errorState.newPasswordEmpty = newPassword
-      ? false
-      : true;
-    errorState.verifyPasswordEmpty = verifyPassword
-      ? false
-      : true;
-
-    return errorState;
-  }
-
-  setErrorsForEmptyInputFields = () => {
-    const { oldPasswordEmpty, newPasswordEmpty, verifyPasswordEmpty} = this.emptyInputFields();
-
-    this.setState({
-      oldPasswordError: oldPasswordEmpty
-        ? 'Field is required.'
-        : '',
-      newPasswordError: newPasswordEmpty
-        ? 'Field is required.'
-        : '',
-      verifyPasswordError: verifyPasswordEmpty
-        ? 'Field is required.'
-        : ''
-    });
-  }
-
-  passwordsAreEqual = () => this.state.newPassword === this.state.verifyPassword
-
-  setErrorsForNonIdenticalPasswords = () => {
-    this.setState({newPasswordError: 'Passwords are not identical.', verifyPasswordError: 'Passwords are not identical.'});
   }
 
   changePassword = () => {
@@ -97,37 +34,24 @@ export default class ChangePasswordModal extends Component {
     if (error) {
       this.setState({meteorError: error.reason})
     } else {
-      $('#changePasswordModal').modal('hide')
+      $(`#${this.modalName}`).modal('hide')
       successNoty('Your password has been changed successfully!');
     }
   }
 
   render() {
-    const changePasswordData = {
-      oldPassword: this.state.oldPassword,
-      newPassword: this.state.newPassword,
-      verifyPassword: this.state.verifyPassword
-    };
-
-    const errors = {
-      oldPasswordError: this.state.oldPasswordError,
-      newPasswordError: this.state.newPasswordError,
-      verifyPasswordError: this.state.verifyPasswordError
-    };
-
     return (
-      <Modal modalName="changePasswordModal" onModalClose={this.props.onModalClose}>
+      <Modal modalName={this.modalName} onModalClose={this.props.onModalClose}>
         <ModalHeader modalTitle="Change password"/>
         <ModalBody meteorError={this.state.meteorError}>
-          <ChangePasswordForm onInputChange={this.onChangePasswordInputChange} userInfo={changePasswordData} errors={errors}/>
+          <ChangePasswordForm
+            onInputChange={this.onChangePasswordInputChange} changePassword={this.changePassword}
+            formId={this.formId} userInfo={{...this.state}}
+          />
         </ModalBody>
         <ModalFooter>
-          <button type="button" className="btn btn-secondary" data-dismiss="modal">
-            Cancel
-          </button>
-          <button type="button" className="btn btn-primary" onClick={this.confirmBtnClicked}>
-            Confirm
-          </button>
+          <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" form={this.formId} className="btn btn-primary">Confirm</button>
         </ModalFooter>
       </Modal>
     )
