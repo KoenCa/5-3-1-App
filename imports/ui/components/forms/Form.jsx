@@ -5,33 +5,27 @@ export default class Form extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      formValid: true
-    };
+    this.state = {formIsSubmitted: false};
   }
 
   formSubmitted = (event) => {
     event.preventDefault()
 
     if (!this.form.checkValidity()) {
-      this.setState({
-        formValid: false
-      });
+      this.setState({formIsSubmitted: true});
     } else {
-      this.setState({
-        formValid: true
-      }, this.props.onFormValid);
+      this.props.onFormValid();
     }
   }
 
   render() {
+    const {formId} = this.props;
+    const {formIsSubmitted} = this.state;
+
     return (
       <form
-        id={this.props.formId}
-        onSubmit={this.formSubmitted}
-        ref={(input) => { this.form = input; }}
-        className={this.state.formValid ? '' : 'was-validated' }
-        noValidate
+        id={formId} onSubmit={this.formSubmitted} ref={(input) => { this.form = input; }}
+        className={formIsSubmitted ? 'was-validated' : ''} noValidate
       >
         {this.props.children}
       </form>
