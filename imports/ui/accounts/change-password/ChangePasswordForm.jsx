@@ -11,15 +11,11 @@ export default class ChangePasswordForm extends Component {
   }
 
   checkEqualPasswordsOnBlur = () => {
-    this.passwordsAreEqual()
-      ? this.showPassworValidity()
-      : this.showPasswordError()
+    this.passwordsAreEqual() ? this.showPassworValidity() : this.showPasswordError()
   }
 
   formIsValid = () => {
-    this.passwordsAreEqual()
-      ? this.props.changePassword()
-      : this.showPasswordError();
+    this.passwordsAreEqual() ? this.props.changePassword() : this.showPasswordError();
   }
 
   passwordsAreEqual = () => {
@@ -28,11 +24,11 @@ export default class ChangePasswordForm extends Component {
   }
 
   showPasswordError = () => {
-    this.verifyPasswordInput.setCustomValidity('Passwords must match.')
+    this.verifyPasswordInput.setCustomValidity('Passwords must match.');
   }
 
   showPassworValidity = () => {
-    this.verifyPasswordInput.setCustomValidity('')
+    this.verifyPasswordInput.setCustomValidity('');
   }
 
   render() {
@@ -79,5 +75,5 @@ ChangePasswordForm.propTypes = {
     oldPassword: PropTypes.string.isRequired,
     newPassword: PropTypes.string.isRequired,
     verifyPassword: PropTypes.string.isRequired,
-  })
+  }),
 }
