@@ -13,9 +13,10 @@ export default class ChangeEmailModal extends Component {
     this.state = {
       email: '',
       verifyEmail: '',
-      emailError: '',
-      verifyEmailError: ''
     };
+
+    this.formId = 'changeEmailForm';
+    this.modalName = 'changeEmailModal';
   }
 
   onChangeEmailInputChange = (target) => {
@@ -23,68 +24,8 @@ export default class ChangeEmailModal extends Component {
     this.setState({[id]: value});
   }
 
-  confirmBtnClicked = () => {
-    this.resetValidations(this.runValidations)
-  }
-
-  resetValidations = (callback) => {
-    this.setState({
-      emailError: '',
-      verifyEmailError: ''
-    }, callback);
-  }
-
-  runValidations = () => {
-    const {emailEmpty, verifyEmailEmpty} = this.emptyInputFields();
-
-    if (emailEmpty || verifyEmailEmpty) {
-      return this.setErrorsForEmptyInputFields()
-    } else if (!this.emailsAreEqual()) {
-      return this.setErrorsForNonIdenticalEmails()
-    } else {
-      this.changeEmail()
-    }
-  }
-
-  emptyInputFields = () => {
-    const {email, verifyEmail} = this.state;
-    let errorState = {};
-
-    errorState.emailEmpty = email
-      ? false
-      : true;
-    errorState.verifyEmailEmpty = verifyEmail
-      ? false
-      : true;
-
-    return errorState;
-  }
-
-  setErrorsForEmptyInputFields = () => {
-    const {emailEmpty, verifyEmailEmpty} = this.emptyInputFields();
-
-    this.setState({
-      emailError: emailEmpty
-        ? 'Field is required.'
-        : '',
-      verifyEmailError: verifyEmailEmpty
-        ? 'Field is required.'
-        : ''
-    });
-  }
-
-  emailsAreEqual = () => {
-    const {email, verifyEmail} = this.state;
-    return email === verifyEmail
-  }
-
-  setErrorsForNonIdenticalEmails = () => {
-    this.setState({emailError: 'Emails are not identical.', verifyEmailError: 'Emails are not identical.'});
-  }
-
   changeEmail = () => {
     const {email} = this.state;
-
     Meteor.call('accounts.changeEmail', email, this.changeEmailCallback);
   }
 
@@ -92,31 +33,24 @@ export default class ChangeEmailModal extends Component {
     if (error) {
       this.setState({meteorError: error.reason})
     } else {
-      $('#changeEmailModal').modal('hide')
+      $(`#${this.modalName}`).modal('hide')
       successNoty('Your email has been changed successfully!');
     }
   }
 
   render() {
-    const changeEmailData = {
-      email: this.state.email,
-      verifyEmail: this.state.verifyEmail
-    };
-
-    const errors = {
-      emailError: this.state.emailError,
-      verifyEmailError: this.state.verifyEmailError
-    };
-
     return (
-      <Modal modalName="changeEmailModal" onModalClose={this.props.onModalClose}>
+      <Modal modalName={this.modalName} onModalClose={this.props.onModalClose}>
         <ModalHeader modalTitle="Change email"/>
         <ModalBody meteorError={this.state.meteorError}>
-          <ChangeEmailForm onInputChange={this.onChangeEmailInputChange} userInfo={changeEmailData} errors={errors}/>
+          <ChangeEmailForm
+            onInputChange={this.onChangeEmailInputChange} changeEmail={this.changeEmail}
+            formId={this.formId} userInfo={{...this.state}}
+          />
         </ModalBody>
         <ModalFooter>
           <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="button" className="btn btn-primary" onClick={this.confirmBtnClicked}>Confirm</button>
+          <button type="submit" form={this.formId} className="btn btn-primary">Confirm</button>
         </ModalFooter>
       </Modal>
     )
