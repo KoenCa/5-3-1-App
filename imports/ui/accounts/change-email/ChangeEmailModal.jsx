@@ -26,7 +26,7 @@ export default class ChangeEmailModal extends Component {
 
   changeEmail = () => {
     const {email} = this.state;
-    Meteor.call('accounts.changeEmail', email, this.changeEmailCallback);
+    Meteor.call('accounts.changeEmail', {email: email}, this.changeEmailCallback);
   }
 
   changeEmailCallback = (error, result) => {
