@@ -26,18 +26,31 @@ if (Meteor.isServer) {
       describe('#changeEmail', function() {
         it('should change the email of a given user', function() {
           const user = Accounts.findUserByEmail(email);
-          Meteor.user.returns(user)
           const newEmail = 'koen@gmail.com';
 
-          const methodInvocation = {user};
+          Meteor.user.returns(user)
+          const methodInvocation = {};
           const args = {email: newEmail};
 
-          changeEmail.call(args);
+          changeEmail._execute(methodInvocation, args);
 
           changedUser = Accounts.findUserByEmail(newEmail);
           expect(changedUser).to.exist;
           expect(changedUser.emails.length).to.eql(1);
           expect(changedUser.emails[0].address).to.eql(newEmail);
+        });
+
+        it('should throw an error when there is no user', function() {
+          const user = Accounts.findUserByEmail(email);
+          const newEmail = 'koen@gmail.com';
+
+          Meteor.user.returns(null) // No user is logged in
+          const methodInvocation = {};
+          const args = {email: newEmail};
+
+          expect(() => changeEmail._execute(methodInvocation, args)).to.throw(
+            Meteor.Error, 'Not authorized'
+          );
         });
       });
     });
