@@ -1,12 +1,4 @@
-import React from 'react';
-import {Meteor} from 'meteor/meteor';
-import {expect} from 'meteor/practicalmeteor:chai';
-import {sinon} from 'meteor/practicalmeteor:sinon';
-import Enzyme from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-Enzyme.configure({ adapter: new Adapter() });
-import {shallow, mount} from 'enzyme';
-
+import {React, expect, sinon, shallow, mount} from '../../../../test_packages_imports';
 import Form from '../../../../../ui/components/forms/Form';
 
 describe('Form component', () => {
