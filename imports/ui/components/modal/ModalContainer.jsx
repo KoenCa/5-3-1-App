@@ -5,7 +5,7 @@ export default class Modal extends Component {
   componentDidMount() {
     const modalId = `#${this.props.modalName}`
     $(modalId).on('hidden.bs.modal', this.props.onModalClose);
-    $(modalId).modal()
+    $(modalId).modal();
   }
 
   render() {
