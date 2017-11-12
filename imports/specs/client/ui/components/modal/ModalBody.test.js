@@ -1,4 +1,4 @@
-import {React, expect, sinon, shallow} from '../../../../test_packages_imports';
+import {React, expect, shallow} from '../../../../test_packages_imports';
 import ModalBody from '../../../../../ui/components/modal/ModalBody';
 import AlertDanger from '../../../../../ui/components/alerts/AlertDanger';
 
