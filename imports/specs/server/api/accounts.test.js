@@ -1,8 +1,4 @@
-import {Meteor} from 'meteor/meteor';
-import {expect} from 'meteor/practicalmeteor:chai';
-import {sinon} from 'meteor/practicalmeteor:sinon';
-import {Accounts} from 'meteor/accounts-base';
-
+import {React, Meteor, expect, sinon, shallow} from '../../test_packages_imports';
 import {changeEmail} from '../../../api/accounts';
 
 describe('Accounts', function() {
