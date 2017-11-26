@@ -1,30 +1,54 @@
-import {React, Meteor, expect, sinon, shallow, mount} from '../../../../test_packages_imports';
+import {React, expect, sinon, mount} from '../../../../test_packages_imports';
 import RegisterForm from '../../../../../ui/accounts/register/RegisterForm';
 import Form from '../../../../../ui/components/forms/Form';
 
 describe('Register form', () => {
-  let wrapper;
+  let wrapper, onInputChangeSpy, registerSpy, formIsValidSpy, passwordsAreEqualSpy,
+  showPasswordErrorSpy, showPassworValiditySpy;
 
   const formId = 'myForm';
-  const userInfo = {
+  const validUserInfo = {
     email: 'jaap@gmail.com',
     password: 'test123',
     verifyPassword: 'test123'
   };
+  const invalidUserInfo = {
+    email: 'jaap',
+    password: 'test13',
+    verifyPassword: 'test123'
+  };
+  const invalidPasswordsUserInfo = {
+    email: 'jaap@gmail.com',
+    password: 'test13',
+    verifyPassword: 'test123'
+  };
 
   beforeEach(() => {
-    this.onInputChangeSpy = sinon.spy();
-    this.registerSpy = sinon.spy();
+    onInputChangeSpy = sinon.spy();
+    registerSpy = sinon.spy();
+
     wrapper = mount(
       <RegisterForm
-        formId={formId} userInfo={userInfo} onInputChange={onInputChangeSpy} register={registerSpy}
+        formId={formId} userInfo={validUserInfo} onInputChange={onInputChangeSpy}
+        register={registerSpy}
       />
     );
+    const componentInstance = wrapper.instance();
+
+    // Spies/stubs for component methods
+    formIsValidSpy = sinon.spy(componentInstance, 'formIsValid');
+    passwordsAreEqualSpy = sinon.spy(componentInstance, 'passwordsAreEqual');
+
+    // Update wrapper and component instance so spies/stubs are applied
+    wrapper.update();
+    componentInstance.forceUpdate();
   });
 
   afterEach(() => {
-    this.onInputChangeSpy.reset();
-    this.registerSpy.reset();
+    onInputChangeSpy.reset();
+    registerSpy.reset();
+    formIsValidSpy.restore();
+    passwordsAreEqualSpy.restore();
     wrapper.unmount();
   });
 
@@ -36,32 +60,136 @@ describe('Register form', () => {
   });
 
   it('should have the correct state', () => {
-    expect(wrapper.find('input#email').props().value).to.eql(userInfo.email);
-    expect(wrapper.find('input#password').props().value).to.eql(userInfo.password);
-    expect(wrapper.find('input#verifyPassword').props().value).to.eql(userInfo.verifyPassword);
+    expect(wrapper.find('input#email').props().value).to.eql(validUserInfo.email);
+    expect(wrapper.find('input#password').props().value).to.eql(validUserInfo.password);
+    expect(wrapper.find('input#verifyPassword').props().value).to.eql(validUserInfo.verifyPassword);
   });
 
   it('should call the onInputChange method prop when inputs are changed', () => {
     wrapper.find('input#email').simulate('change');
     wrapper.find('input#password').simulate('change');
     wrapper.find('input#verifyPassword').simulate('change');
-    expect(this.onInputChangeSpy.calledThrice).to.be.true;
+    expect(onInputChangeSpy.calledThrice).to.be.true;
   });
 
-  it('should call register method prop when form is valid when submitting', () => {
-    wrapper.find(`form#${formId}`).simulate('submit');
-    expect(this.registerSpy.calledOnce).to.be.true;
+  context('Submit form with valid data', () => {
+    beforeEach(() => {
+      wrapper.find(`form#${formId}`).simulate('submit');
+    });
+
+    it('should trigger the formIsValid callback method', () => {
+      expect(formIsValidSpy.calledOnce).to.be.true;
+    });
+
+    it('should check if the passwords are equal for custom validations', () => {
+      expect(passwordsAreEqualSpy.calledOnce).to.be.true;
+      expect(passwordsAreEqualSpy.returned(true)).to.be.true;
+    });
+
+    it('should call the register callback method from the properties', () => {
+      expect(registerSpy.calledOnce).to.be.true;
+    });
   });
 
-  it('should not call register method prop when form is invalid when submitting', () => {
-    wrapper.unmount();
-    wrapper = mount(
-      <RegisterForm
-        formId={formId} userInfo={{email: 'test', password: 'test'}} register={registerSpy}
-      />
-    );
 
-    wrapper.find(`form#${formId}`).simulate('submit');
-    expect(this.registerSpy.notCalled).to.be.true;
+  context('Submit form with invalid data', () => {
+    beforeEach(() => {
+      onInputChangeSpy = sinon.spy();
+      registerSpy = sinon.spy();
+
+      wrapper = mount(
+        <RegisterForm
+          formId={formId} userInfo={invalidUserInfo} onInputChange={onInputChangeSpy}
+          register={registerSpy}
+        />
+      );
+      const componentInstance = wrapper.instance();
+
+      // Spies/stubs for component methods
+      formIsValidSpy = sinon.spy(componentInstance, 'formIsValid');
+      passwordsAreEqualSpy = sinon.spy(componentInstance, 'passwordsAreEqual');
+
+      // Update wrapper and component instance so spies/stubs are applied
+      wrapper.update();
+      componentInstance.forceUpdate();
+
+      wrapper.find(`form#${formId}`).simulate('submit');
+    });
+
+    afterEach(() => {
+      onInputChangeSpy.reset();
+      registerSpy.reset();
+      formIsValidSpy.restore();
+      passwordsAreEqualSpy.restore();
+      wrapper.unmount();
+    });
+
+
+    it('should not trigger the formIsValid callback method', () => {
+      expect(formIsValidSpy.called).to.be.false;
+    });
+
+    it('should not check if the passwords are equal', () => {
+      expect(passwordsAreEqualSpy.called).to.be.false;
+    });
+
+    it('should not call the register callback method from the properties', () => {
+      expect(registerSpy.called).to.be.false;
+    });
+  });
+
+  context('Submit form with passwords that are not equal', () => {
+    beforeEach(() => {
+      onInputChangeSpy = sinon.spy();
+      registerSpy = sinon.spy();
+
+      wrapper = mount(
+        <RegisterForm
+          formId={formId} userInfo={invalidPasswordsUserInfo} onInputChange={onInputChangeSpy}
+          register={registerSpy}
+        />
+      );
+      const componentInstance = wrapper.instance();
+
+      // Spies/stubs for component methods
+      formIsValidSpy = sinon.spy(componentInstance, 'formIsValid');
+      passwordsAreEqualSpy = sinon.spy(componentInstance, 'passwordsAreEqual');
+      showPasswordErrorSpy = sinon.spy(componentInstance, 'showPasswordError');
+      setCustomValiditySpy = sinon.spy(componentInstance.verifyPasswordInput, 'setCustomValidity');
+
+      // Update wrapper and component instance so spies/stubs are applied
+      wrapper.update();
+      componentInstance.forceUpdate();
+
+      wrapper.find(`form#${formId}`).simulate('submit');
+    });
+
+    afterEach(() => {
+      onInputChangeSpy.reset();
+      registerSpy.reset();
+      formIsValidSpy.restore();
+      passwordsAreEqualSpy.restore();
+      showPasswordErrorSpy.restore();
+      setCustomValiditySpy.restore();
+      wrapper.unmount();
+    });
+
+    it('should trigger the formIsValid callback method', () => {
+      expect(formIsValidSpy.calledOnce).to.be.true;
+    });
+
+    it('should check if the passwords are equal', () => {
+      expect(passwordsAreEqualSpy.calledOnce).to.be.true;
+      expect(passwordsAreEqualSpy.returned(false)).to.be.true;
+    });
+
+    it('should show a password error to the user', () => {
+      expect(showPasswordErrorSpy.calledOnce).to.be.true;
+      expect(setCustomValiditySpy.calledWith('Passwords must match.')).to.be.true;
+    });
+
+    it('should not call the register callback method from the properties', () => {
+      expect(registerSpy.called).to.be.false;
+    });
   });
 });
