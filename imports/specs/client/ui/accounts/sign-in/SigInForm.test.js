@@ -28,9 +28,9 @@ describe('Sign In form', () => {
   });
 
   it('should contain the correct elements', () => {
-    expect(wrapper.exists(<Form formId={formId} onFormValid={function(){}}/>)).to.be.true;
-    expect(wrapper.exists(<input type="email" id="email" required/>)).to.be.true;
-    expect(wrapper.exists(<input type="password" id="password" required/>)).to.be.true;
+    expect(wrapper.find('Form').length).to.eql(1);
+    expect(wrapper.find('input#email').length).to.eql(1);
+    expect(wrapper.find('input#password').length).to.eql(1);
   });
 
   it('should have the correct state', () => {
