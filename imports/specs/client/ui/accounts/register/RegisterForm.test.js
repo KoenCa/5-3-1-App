@@ -4,7 +4,7 @@ import Form from '../../../../../ui/components/forms/Form';
 
 describe('Register form', () => {
   let wrapper, onInputChangeSpy, registerSpy, formIsValidSpy, passwordsAreEqualSpy,
-  showPasswordErrorSpy, showPassworValiditySpy;
+  showPasswordErrorSpy, showPassworValiditySpy, checkEqualPasswordsOnBlurSpy;
 
   const formId = 'myForm';
   const validUserInfo = {
@@ -190,6 +190,58 @@ describe('Register form', () => {
 
     it('should not call the register callback method from the properties', () => {
       expect(registerSpy.called).to.be.false;
+    });
+  });
+
+  context('Blur on verifyPassword input', () => {
+    beforeEach(() => {
+      onInputChangeSpy = sinon.spy();
+      registerSpy = sinon.spy();
+
+      wrapper = mount(
+        <RegisterForm
+          formId={formId} userInfo={validUserInfo} onInputChange={onInputChangeSpy}
+          register={registerSpy}
+        />
+      );
+      const componentInstance = wrapper.instance();
+
+      // Spies/stubs for component methods
+      formIsValidSpy = sinon.spy(componentInstance, 'formIsValid');
+      passwordsAreEqualSpy = sinon.spy(componentInstance, 'passwordsAreEqual');
+      showPassworValiditySpy = sinon.spy(componentInstance, 'showPassworValidity');
+      setCustomValiditySpy = sinon.spy(componentInstance.verifyPasswordInput, 'setCustomValidity');
+      checkEqualPasswordsOnBlurSpy = sinon.spy(componentInstance, 'checkEqualPasswordsOnBlur');
+
+      // Update wrapper and component instance so spies/stubs are applied
+      wrapper.update();
+      componentInstance.forceUpdate();
+
+      wrapper.find('input#verifyPassword').simulate('blur');
+    });
+
+    afterEach(() => {
+      onInputChangeSpy.reset();
+      registerSpy.reset();
+      formIsValidSpy.restore();
+      passwordsAreEqualSpy.restore();
+      showPassworValiditySpy.restore();
+      setCustomValiditySpy.restore();
+      checkEqualPasswordsOnBlurSpy.restore();
+      wrapper.unmount();
+    });
+
+    it('should call the correct callback of the onBlur event of the input', () => {
+      expect(checkEqualPasswordsOnBlurSpy.calledOnce).to.be.true;
+    });
+
+    it('should check if the passwords are equal ', () => {
+      expect(passwordsAreEqualSpy.calledOnce).to.be.true;
+      expect(passwordsAreEqualSpy.returned(true)).to.be.true;
+    });
+
+    it('should show that passwords are valid to the user', () => {
+      expect(showPassworValiditySpy.calledOnce).to.be.true;
     });
   });
 });
