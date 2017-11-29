@@ -238,6 +238,7 @@ describe('Register form', () => {
     it('should check if the passwords are equal ', () => {
       expect(passwordsAreEqualSpy.calledOnce).to.be.true;
       expect(passwordsAreEqualSpy.returned(true)).to.be.true;
+      expect(setCustomValiditySpy.calledWith('')).to.be.true;
     });
 
     it('should show that passwords are valid to the user', () => {
