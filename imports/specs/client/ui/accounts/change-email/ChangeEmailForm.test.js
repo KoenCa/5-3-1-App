@@ -1,4 +1,4 @@
-import {React, Meteor, expect, sinon, shallow, mount} from '../../../../test_packages_imports';
+import {React, expect, sinon, mount} from '../../../../test_packages_imports';
 import ChangeEmailForm from '../../../../../ui/accounts/change-email/ChangeEmailForm';
 import Form from '../../../../../ui/components/forms/Form';
 
@@ -15,7 +15,7 @@ describe('Change email form', () => {
     email: 'jaap',
     verifyEmail: 'jaap@gmail.com'
   };
-  const invalidPasswordsUserInfo = {
+  const invalidEmailsUserInfo = {
     email: 'jaap@gmail.com',
     verifyEmail: 'koen@gmail.com'
   };
@@ -139,7 +139,7 @@ describe('Change email form', () => {
 
       wrapper = mount(
         <ChangeEmailForm
-          formId={formId} userInfo={invalidPasswordsUserInfo} onInputChange={onInputChangeSpy}
+          formId={formId} userInfo={invalidEmailsUserInfo} onInputChange={onInputChangeSpy}
           changeEmail={changeEmailSpy}
         />
       );
