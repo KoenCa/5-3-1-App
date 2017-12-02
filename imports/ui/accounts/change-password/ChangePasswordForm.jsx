@@ -54,7 +54,9 @@ export default class ChangePasswordForm extends Component {
           <div className="invalid-feedback">Please provide your new password.</div>
         </div>
         <div className="form-group">
-          <label htmlFor="verifyPassword" className="form-control-label">Verify new password:</label>
+          <label htmlFor="verifyPassword" className="form-control-label">
+            Verify new password:
+          </label>
           <input
             value={verifyPassword} type="password" className="form-control" id="verifyPassword"
             onChange={this.handleInputChange} ref={(input) => {this.verifyPasswordInput = input;}}
