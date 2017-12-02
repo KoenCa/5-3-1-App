@@ -3,7 +3,7 @@ import SignInForm from '../../../../../ui/accounts/sign-in/SignInForm';
 import Form from '../../../../../ui/components/forms/Form';
 
 describe('Sign In form', () => {
-  let wrapper;
+  let wrapper, onInputChangeSpy, signInSpy, handleInputChangeSpy, formIsValidSpy;
 
   const formId = 'myForm';
   const userInfo = {
@@ -12,18 +12,24 @@ describe('Sign In form', () => {
   };
 
   beforeEach(() => {
-    this.onInputChangeSpy = sinon.spy();
-    this.signInSpy = sinon.spy();
+    onInputChangeSpy = sinon.spy();
+    signInSpy = sinon.spy();
     wrapper = mount(
       <SignInForm
         formId={formId} userInfo={userInfo} onInputChange={onInputChangeSpy} signIn={signInSpy}
       />
     );
+    const componentInstance = wrapper.instance();
+
+    handleInputChangeSpy = sinon.spy(componentInstance, 'handleInputChange');
+    formIsValidSpy = sinon.spy(componentInstance, 'formIsValid');
+
+    componentInstance.forceUpdate();
   });
 
   afterEach(() => {
-    this.onInputChangeSpy.reset();
-    this.signInSpy.reset();
+    onInputChangeSpy.reset();
+    signInSpy.reset();
     wrapper.unmount();
   });
 
@@ -33,20 +39,27 @@ describe('Sign In form', () => {
     expect(wrapper.find('input#password').length).to.eql(1);
   });
 
-  it('should have the correct state', () => {
-    expect(wrapper.find('input#email').props().value).to.eql(userInfo.email);
-    expect(wrapper.find('input#password').props().value).to.eql(userInfo.password);
+  it('should respond to change of the input elements', () => {
+    wrapper.find('input#email').simulate('change');
+    wrapper.find('input#password').simulate('change');
+    expect(handleInputChangeSpy.calledTwice).to.be.true;
   });
 
   it('should call the onInputChange method prop when inputs are changed', () => {
     wrapper.find('input#email').simulate('change');
     wrapper.find('input#password').simulate('change');
-    expect(this.onInputChangeSpy.calledTwice).to.be.true;
+    expect(onInputChangeSpy.calledTwice).to.be.true;
+  });
+
+  it('should have the correct state', () => {
+    expect(wrapper.find('input#email').props().value).to.eql(userInfo.email);
+    expect(wrapper.find('input#password').props().value).to.eql(userInfo.password);
   });
 
   it('should call signIn method prop when form is valid when submitting', () => {
     wrapper.find(`form#${formId}`).simulate('submit');
-    expect(this.signInSpy.calledOnce).to.be.true;
+    expect(formIsValidSpy.calledOnce).to.be.true;
+    expect(signInSpy.calledOnce).to.be.true;
   });
 
   it('should not call signIn method prop when form is invalid when submitting', () => {
@@ -58,6 +71,7 @@ describe('Sign In form', () => {
     );
 
     wrapper.find(`form#${formId}`).simulate('submit');
-    expect(this.signInSpy.notCalled).to.be.true;
+    expect(formIsValidSpy.notCalled).to.be.true;
+    expect(signInSpy.notCalled).to.be.true;
   });
 });
