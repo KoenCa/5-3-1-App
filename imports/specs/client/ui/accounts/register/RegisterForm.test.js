@@ -60,7 +60,8 @@ describe('Register form', () => {
   it('should respond to change of the input elements', () => {
     wrapper.find('input#email').simulate('change');
     wrapper.find('input#password').simulate('change');
-    expect(handleInputChangeSpy.calledTwice).to.be.true;
+    wrapper.find('input#verifyPassword').simulate('change');
+    expect(handleInputChangeSpy.calledThrice).to.be.true;
   });
 
   it('should call the onInputChange method prop when inputs are changed', () => {
