@@ -3,7 +3,7 @@ import ChangeEmailForm from '../../../../../ui/accounts/change-email/ChangeEmail
 import Form from '../../../../../ui/components/forms/Form';
 
 describe('Change email form', () => {
-  let wrapper, onInputChangeSpy, changeEmailSpy, formIsValidSpy, emailsAreEqualSpy,
+  let wrapper, onInputChangeSpy, handleInputChangeSpy, changeEmailSpy, formIsValidSpy, emailsAreEqualSpy,
   showEmailErrorSpy, showEmailValiditySpy, checkEqualEmailsOnBlurSpy;
 
   const formId = 'myForm';
@@ -32,12 +32,10 @@ describe('Change email form', () => {
     );
     const componentInstance = wrapper.instance();
 
-    // Spies/stubs for component methods
     formIsValidSpy = sinon.spy(componentInstance, 'formIsValid');
     emailsAreEqualSpy = sinon.spy(componentInstance, 'emailsAreEqual');
+    handleInputChangeSpy = sinon.spy(componentInstance, 'handleInputChange');
 
-    // Update wrapper and component instance so spies/stubs are applied
-    wrapper.update();
     componentInstance.forceUpdate();
   });
 
@@ -55,15 +53,21 @@ describe('Change email form', () => {
     expect(wrapper.find('input#verifyEmail').length).to.eql(1);
   });
 
-  it('should have the correct state', () => {
-    expect(wrapper.find('input#email').props().value).to.eql(validUserInfo.email);
-    expect(wrapper.find('input#verifyEmail').props().value).to.eql(validUserInfo.verifyEmail);
+  it('should respond to change of the input elements', () => {
+    wrapper.find('input#email').simulate('change');
+    wrapper.find('input#verifyEmail').simulate('change');
+    expect(handleInputChangeSpy.calledTwice).to.be.true;
   });
 
   it('should call the onInputChange method prop when inputs are changed', () => {
     wrapper.find('input#email').simulate('change');
     wrapper.find('input#verifyEmail').simulate('change');
     expect(onInputChangeSpy.calledTwice).to.be.true;
+  });
+
+  it('should have the correct state', () => {
+    expect(wrapper.find('input#email').props().value).to.eql(validUserInfo.email);
+    expect(wrapper.find('input#verifyEmail').props().value).to.eql(validUserInfo.verifyEmail);
   });
 
   context('Submit form with valid data', () => {
