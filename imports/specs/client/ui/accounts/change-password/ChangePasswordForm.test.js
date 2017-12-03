@@ -3,7 +3,7 @@ import ChangePasswordForm from '../../../../../ui/accounts/change-password/Chang
 import Form from '../../../../../ui/components/forms/Form';
 
 describe('Change password form', () => {
-  let wrapper, onInputChangeSpy, changePasswordSpy, formIsValidSpy, passwordsAreEqualSpy,
+  let wrapper, onInputChangeSpy, handleInputChange, changePasswordSpy, formIsValidSpy, passwordsAreEqualSpy,
   showPasswordErrorSpy, showPassworValiditySpy, checkEqualPasswordsOnBlurSpy;
 
   const formId = 'myForm';
@@ -35,12 +35,10 @@ describe('Change password form', () => {
     );
     const componentInstance = wrapper.instance();
 
-    // Spies/stubs for component methods
     formIsValidSpy = sinon.spy(componentInstance, 'formIsValid');
     passwordsAreEqualSpy = sinon.spy(componentInstance, 'passwordsAreEqual');
+    handleInputChangeSpy = sinon.spy(componentInstance, 'handleInputChange');
 
-    // Update wrapper and component instance so spies/stubs are applied
-    wrapper.update();
     componentInstance.forceUpdate();
   });
 
@@ -59,10 +57,11 @@ describe('Change password form', () => {
     expect(wrapper.find('input#verifyPassword').length).to.eql(1);
   });
 
-  it('should have the correct state', () => {
-    expect(wrapper.find('input#oldPassword').props().value).to.eql(validUserInfo.oldPassword);
-    expect(wrapper.find('input#newPassword').props().value).to.eql(validUserInfo.newPassword);
-    expect(wrapper.find('input#verifyPassword').props().value).to.eql(validUserInfo.verifyPassword);
+  it('should respond to change of the input elements', () => {
+    wrapper.find('input#oldPassword').simulate('change');
+    wrapper.find('input#newPassword').simulate('change');
+    wrapper.find('input#verifyPassword').simulate('change');
+    expect(handleInputChangeSpy.calledThrice).to.be.true;
   });
 
   it('should call the onInputChange method prop when inputs are changed', () => {
@@ -70,6 +69,12 @@ describe('Change password form', () => {
     wrapper.find('input#newPassword').simulate('change');
     wrapper.find('input#verifyPassword').simulate('change');
     expect(onInputChangeSpy.calledThrice).to.be.true;
+  });
+
+  it('should have the correct state', () => {
+    expect(wrapper.find('input#oldPassword').props().value).to.eql(validUserInfo.oldPassword);
+    expect(wrapper.find('input#newPassword').props().value).to.eql(validUserInfo.newPassword);
+    expect(wrapper.find('input#verifyPassword').props().value).to.eql(validUserInfo.verifyPassword);
   });
 
   context('Submit form with valid data', () => {
