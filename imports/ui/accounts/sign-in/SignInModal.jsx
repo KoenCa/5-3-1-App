@@ -16,6 +16,7 @@ export default class SignInModal extends Component {
     };
 
     this.formId = 'signInForm';
+    this.modalName = 'signInModal';
   }
 
   onSignInInputChange = (target) => {
@@ -35,7 +36,7 @@ export default class SignInModal extends Component {
     if (error) {
       this.setState({meteorError: error.reason})
     } else {
-      $('#signInModal').modal('hide')
+      $(`#${this.modalName}`).modal('hide')
       successNoty('You are logged in!');
     }
   }
@@ -47,7 +48,7 @@ export default class SignInModal extends Component {
     };
 
     return (
-      <Modal modalName="signInModal" onModalClose={this.props.onModalClose}>
+      <Modal modalName={this.modalName} onModalClose={this.props.onModalClose}>
         <ModalHeader modalTitle="Sign in"/>
         <ModalBody meteorError={this.state.meteorError}>
           <SignInForm onInputChange={this.onSignInInputChange} signIn={this.signIn} formId={this.formId} userInfo={signInData} />
