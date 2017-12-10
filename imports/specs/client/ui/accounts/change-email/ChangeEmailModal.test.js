@@ -1,4 +1,4 @@
-import {React, Meteor, expect, sinon, shallow, mount} from '../../../../test_packages_imports';
+import {React, Meteor, expect, sinon, shallow} from '../../../../test_packages_imports';
 import ChangeEmailModal from '../../../../../ui/accounts/change-email/ChangeEmailModal';
 
 describe('Change email modal', () => {
