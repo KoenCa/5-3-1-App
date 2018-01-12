@@ -1,22 +1,32 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
 
-import NavBar from '../ui/header/NavBar.jsx'
+import NavBar from '../ui/header/NavBar.jsx';
+import Home from './home/Home';
 
 export default class App extends Component {
     render() {
         return (
-            <div className="container-fluid">
-                <header>
-                    <NavBar />
-                </header>
-                <main>
-
-                </main>
-                <footer>
-                </footer>
-            </div>
+            <Router>
+                <div className="container-fluid">
+                    <header>
+                        <NavBar>
+                            <li className="nav-item">
+                                <NavLink to="/" className="nav-link">
+                                    Home
+                                </NavLink>
+                            </li>
+                        </NavBar>
+                    </header>
+                    <main>
+                        <Route exact path="/" component={Home}/>
+                    </main>
+                    <footer>
+                    </footer>
+                </div>
+            </Router>
         )
     }
 }

@@ -21,9 +21,7 @@ class NavBar extends Component {
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
-            <li className="nav-item active">
-              <a className="nav-link" href="#">Home</a>
-            </li>
+            {this.props.children}
           </ul>
           <ul className="navbar-nav">
             <li className="nav-item">
