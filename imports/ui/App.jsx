@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router, Route, NavLink, Switch } from 'react-router-dom';
 
 import NavBar from '../ui/header/NavBar.jsx';
 import Home from './home/Home';
+import NoMatch from './404/NoMatch';
 
 export default class App extends Component {
     render() {
@@ -21,7 +22,10 @@ export default class App extends Component {
                         </NavBar>
                     </header>
                     <main>
-                        <Route exact path="/" component={Home}/>
+                        <Switch>
+                            <Route exact path="/" component={Home}/>
+                            <Route component={NoMatch}/>
+                        </Switch>
                     </main>
                     <footer>
                     </footer>
