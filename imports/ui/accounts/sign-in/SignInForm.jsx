@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import { Accounts } from 'meteor/accounts-base';
 
 import Form from '../../components/forms/Form';
 
@@ -12,6 +13,11 @@ export default class SignInForm extends Component {
 
   formIsValid = () => {
     this.props.signIn()
+  }
+
+  forgotPassword = () => {
+    const email = this.props.userInfo.email;
+    Accounts.forgotPassword({email: email});
   }
 
   render() {
@@ -36,6 +42,7 @@ export default class SignInForm extends Component {
           />
           <div className="invalid-feedback">Please provide a valid password.</div>
         </div>
+        <a onClick={this.forgotPassword} href="javascript:void(0);">Forgot password?</a>
       </Form>
     )
   }

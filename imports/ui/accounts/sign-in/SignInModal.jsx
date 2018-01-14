@@ -52,7 +52,6 @@ export default class SignInModal extends Component {
         <ModalHeader modalTitle="Sign in"/>
         <ModalBody meteorError={this.state.meteorError}>
           <SignInForm onInputChange={this.onSignInInputChange} signIn={this.signIn} formId={this.formId} userInfo={signInData} />
-          <a href="javascript:void(0);">Forgot password?</a>
         </ModalBody>
         <ModalFooter>
           <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
